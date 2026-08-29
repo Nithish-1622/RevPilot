@@ -1,0 +1,57 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: revpilot-control-plane
+  
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5433/revpilot}
+    username: ${POSTGRES_USER:revpilot_user}
+    password: ${POSTGRES_PASSWORD:revpilot_pass}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: revpilot-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+ai:
+  service:
+    url: ${AI_SERVICE_URL:http://localhost:8000}
+    token: ${AI_SERVICE_TOKEN:revpilot_ai_service_secret_token_12345}
+
+razorpay:
+  key-id: ${RAZORPAY_KEY_ID:rzp_test_dummy_key_id}
+  key-secret: ${RAZORPAY_KEY_SECRET:rzp_test_dummy_key_secret}
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:rzp_test_webhook_secret}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
