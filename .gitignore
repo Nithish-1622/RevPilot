@@ -1,0 +1,46 @@
+# Operating System
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Environment and Secrets
+.env
+.env.local
+*.pem
+*.key
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Node / React
+node_modules/
+dist/
+.output/
+.npm/
+
+# Docker / Volumes
+.docker/
+
+# Logs
+*.log
+logs/
