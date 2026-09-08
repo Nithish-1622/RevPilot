@@ -145,6 +145,30 @@ Revpilot/
 
 ## Quick Setup Instructions
 
+### 🚀 One-Command Start (All Services)
+
+Run the script runner corresponding to your OS environment to automatically spin up Docker containers (PostgreSQL, Redis, Kafka), launch the FastAPI AI service (port 8000), launch the Spring Boot backend (port 8080), and launch the React SPA (port 5173):
+
+- **Windows Batch**:
+  ```cmd
+  start_all.bat
+  ```
+
+- **Windows PowerShell**:
+  ```powershell
+  .\start_all.ps1
+  ```
+
+- **Linux / macOS / Git Bash**:
+  ```bash
+  chmod +x start_all.sh
+  ./start_all.sh
+  ```
+
+---
+
+### Manual Step-by-Step Start
+
 1. **Start Infrastructure Services**:
    ```bash
    cd infrastructure
@@ -173,6 +197,10 @@ Revpilot/
    ```
 
 5. **Run Simulator & Verify Workflow**:
-   - Open `http://localhost:3000/simulator`.
+   - Open `http://localhost:5173/simulator`.
    - Click **Generate Batch** to synthesize 10 failed payments.
    - Click **Run Recovery** to observe AI decisioning, policy validation, Razorpay Test Mode execution, and live dashboard metrics updates.
+
+6. **Postman API Testing**:
+   - Import [`RevPilot_Postman_Collection.json`](file:///k:/RevPilot/RevPilot_Postman_Collection.json) into Postman.
+   - Test endpoints across all 7 organized folders (`System Checks`, `Demo Batch Simulator`, `Dashboard Summary`, `Merchant Policy`, `Recovery Cases & Human Approval`, `FastAPI AI Service`, `Razorpay Webhooks`).

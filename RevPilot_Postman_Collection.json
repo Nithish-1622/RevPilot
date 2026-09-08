@@ -1,0 +1,360 @@
+{
+  "info": {
+    "_postman_id": "revpilot-api-collection-v1",
+    "name": "RevPilot AI Revenue Recovery Platform",
+    "description": "Complete API Collection for RevPilot Autonomous AI Revenue Recovery Platform.\nIncludes all endpoints for Spring Boot Control Plane (Port 8080) and FastAPI AI Intelligence Engine (Port 8000).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "control_plane_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "ai_service_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "ai_service_token",
+      "value": "revpilot_ai_service_secret_token_12345",
+      "type": "string"
+    },
+    {
+      "key": "merchant_id",
+      "value": "merch_demo_101",
+      "type": "string"
+    },
+    {
+      "key": "case_id",
+      "value": "REC-pay_demo_101",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - System & Health Checks",
+      "item": [
+        {
+          "name": "Control Plane Health Check (Actuator)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{control_plane_url}}/actuator/health",
+              "host": ["{{control_plane_url}}"],
+              "path": ["actuator", "health"]
+            },
+            "description": "Verify Spring Boot Control Plane readiness and database connection."
+          }
+        },
+        {
+          "name": "AI Service Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{ai_service_url}}/health",
+              "host": ["{{ai_service_url}}"],
+              "path": ["health"]
+            },
+            "description": "Verify FastAPI AI Service health status."
+          }
+        },
+        {
+          "name": "Get Loaded ML Model Metadata",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/models",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "models"]
+            },
+            "description": "Fetch loaded LightGBM model version, holdout test metrics (ROC-AUC, F1-Score, Confusion Matrix)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Demo Batch Simulator",
+      "item": [
+        {
+          "name": "Generate Synthetic Payment Failure Batch",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/demo/generate-batch?count=10",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "demo", "generate-batch"],
+              "query": [
+                {
+                  "key": "count",
+                  "value": "10",
+                  "description": "Number of synthetic failed payments to generate (e.g. 10, 100, 1000)"
+                }
+              ]
+            },
+            "description": "Generates a batch of synthetic payment failures and registers eligible recovery cases."
+          }
+        },
+        {
+          "name": "Run End-to-End Recovery Autopilot Batch",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/demo/run-recovery",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "demo", "run-recovery"]
+            },
+            "description": "Executes complete recovery autopilot cycle across all eligible cases."
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Dashboard & Financial Metrics",
+      "item": [
+        {
+          "name": "Get Dashboard Financial Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/dashboard/summary",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "dashboard", "summary"]
+            },
+            "description": "Returns aggregated financial metrics: Revenue at Risk, Recovered Revenue, Recovery Rate %, Policy Blocks, and Pending Approvals."
+          }
+        },
+        {
+          "name": "Get Recent Audit Activity Stream",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/dashboard/activity",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "dashboard", "activity"]
+            },
+            "description": "Fetches the 50 most recent immutable audit log events across all transactions."
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Merchant Policy Engine",
+      "item": [
+        {
+          "name": "Get Merchant Policy Config",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/policy/{{merchant_id}}",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "policy", "{{merchant_id}}"]
+            },
+            "description": "Retrieves the cached business policy rules for a specific merchant."
+          }
+        },
+        {
+          "name": "Update Merchant Policy Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"merchantId\": \"{{merchant_id}}\",\n  \"maxRetryAttempts\": 3,\n  \"maxDiscountPercent\": 15.00,\n  \"approvalThreshold\": 5000.00,\n  \"maxIncentiveCount\": 2,\n  \"minimumRecoveryProbability\": 0.4000,\n  \"coolOffPeriodMinutes\": 120\n}"
+            },
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/policy/{{merchant_id}}",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "policy", "{{merchant_id}}"]
+            },
+            "description": "Updates merchant business policy bounds and evicts policy cache."
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Recovery Cases & Human-In-The-Loop",
+      "item": [
+        {
+          "name": "Analyze Case via AI",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"failureCode\": \"TRANSIENT_FAILURE\"\n}"
+            },
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/recovery/cases/{{case_id}}/analyze",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "recovery", "cases", "{{case_id}}", "analyze"]
+            },
+            "description": "Triggers AI analysis and policy evaluation for a specific failure case."
+          }
+        },
+        {
+          "name": "Execute Case with Idempotency Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-exec-key-1001",
+                "description": "Ensures transaction is executed exactly once"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"failureCode\": \"TRANSIENT_FAILURE\"\n}"
+            },
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/recovery/cases/{{case_id}}/execute",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "recovery", "cases", "{{case_id}}", "execute"]
+            },
+            "description": "Executes recovery payment via Razorpay Test Mode client under policy bounds."
+          }
+        },
+        {
+          "name": "Approve High-Value Case (Human Approval)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/recovery/cases/{{case_id}}/approve",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "recovery", "cases", "{{case_id}}", "approve"]
+            },
+            "description": "Explicit human merchant approval for cases in PENDING_APPROVAL status (> ₹5,000 threshold)."
+          }
+        },
+        {
+          "name": "Reject Case (Human Rejection)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/recovery/cases/{{case_id}}/reject",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "recovery", "cases", "{{case_id}}", "reject"]
+            },
+            "description": "Rejects recovery intervention for a case and sets status to BLOCKED."
+          }
+        },
+        {
+          "name": "Stop Recovery Intervention",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/recovery/cases/{{case_id}}/stop",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "recovery", "cases", "{{case_id}}", "stop"]
+            },
+            "description": "Manually terminates recovery attempt for a case."
+          }
+        },
+        {
+          "name": "Get Audit Timeline for Case",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/recovery/cases/{{case_id}}/audit",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "recovery", "cases", "{{case_id}}", "audit"]
+            },
+            "description": "Fetches complete, chronologically ordered audit trail events for a single case."
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - FastAPI Intelligence Service (Direct AI Engine)",
+      "item": [
+        {
+          "name": "Direct AI Analysis (LangGraph StateGraph)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-AI-Service-Token",
+                "value": "{{ai_service_token}}",
+                "description": "Service authentication token"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_id\": \"pay_direct_101\",\n  \"customer_id\": \"cust_direct_101\",\n  \"merchant_id\": \"{{merchant_id}}\",\n  \"amount\": 1800.00,\n  \"failure_code\": \"TRANSIENT_FAILURE\",\n  \"attempt_number\": 1\n}"
+            },
+            "url": {
+              "raw": "{{ai_service_url}}/api/v1/recovery/analyze",
+              "host": ["{{ai_service_url}}"],
+              "path": ["api", "v1", "recovery", "analyze"]
+            },
+            "description": "Directly invokes FastAPI LangGraph StateGraph pipeline, scoring candidate actions and generating LLM reasoning."
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Razorpay Webhooks",
+      "item": [
+        {
+          "name": "Simulate Razorpay Webhook Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Razorpay-Signature",
+                "value": "sample_mock_signature",
+                "description": "HMAC-SHA256 signature header"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"payment.captured\",\n  \"contains\": [\"payment\"],\n  \"payload\": {\n    \"payment\": {\n      \"entity\": {\n        \"id\": \"pay_rzp_mock_999\",\n        \"amount\": 250000,\n        \"status\": \"captured\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{control_plane_url}}/api/v1/razorpay/webhooks",
+              "host": ["{{control_plane_url}}"],
+              "path": ["api", "v1", "razorpay", "webhooks"]
+            },
+            "description": "Simulates incoming Razorpay webhook ingestion with signature verification and deduplication."
+          }
+        }
+      ]
+    }
+  ]
+}
