@@ -1,0 +1,30 @@
+{
+  "model_name": "LightGBM Classifier",
+  "model_version": "recovery_lightgbm_v1",
+  "trained_at": "2026-08-29T07:11:21.680864",
+  "feature_version": "v1",
+  "dataset_size": 50000,
+  "metrics": {
+    "accuracy": 0.7577,
+    "precision": 0.777902832489214,
+    "recall": 0.7699591533605644,
+    "f1_score": 0.7739106093123076,
+    "roc_auc": 0.8302606003363084,
+    "pr_auc": 0.844752259863101,
+    "confusion_matrix": [
+      [
+        3430,
+        1184
+      ],
+      [
+        1239,
+        4147
+      ]
+    ]
+  },
+  "baseline_metrics": {
+    "accuracy": 0.7565,
+    "f1_score": 0.7742653193659034,
+    "roc_auc": 0.831605958455441
+  }
+}
