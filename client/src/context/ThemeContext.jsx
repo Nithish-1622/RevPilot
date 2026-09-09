@@ -4,7 +4,8 @@ const ThemeContext = createContext()
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('revpilot_theme') || 'dark'
+    // Default to light mode for Razorpay Theme
+    return localStorage.getItem('revpilot_theme') || 'light'
   })
 
   useEffect(() => {

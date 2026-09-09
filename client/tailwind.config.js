@@ -4,18 +4,39 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        fintech: {
-          dark: '#0B0F19',
-          card: '#111827',
-          border: '#1F2937',
-          accent: '#6366F1',
-          emerald: '#10B981',
-          rose: '#F43F5E',
-          amber: '#F59E0B'
+        main: 'var(--text-main)',
+        muted: 'var(--text-muted)',
+        surface: 'var(--bg-surface)',
+        'surface-elevated': 'var(--bg-surface-elevated)',
+        razorblue: {
+          DEFAULT: '#0C6FEE',
+          50: '#F0F6FF',
+          100: '#E0EDFF',
+          500: '#0C6FEE',
+          600: '#0B5ED7',
+          700: '#094EB5',
+        },
+        razornavy: {
+          DEFAULT: '#02042B',
+          light: '#070D1E',
+          card: '#0E162B',
         }
+      },
+      backgroundColor: {
+        main: 'var(--bg-main)',
+        surface: 'var(--bg-surface)',
+        'surface-elevated': 'var(--bg-surface-elevated)',
+      },
+      textColor: {
+        main: 'var(--text-main)',
+        muted: 'var(--text-muted)',
+      },
+      borderColor: {
+        DEFAULT: 'var(--border-color)',
       }
     },
   },
