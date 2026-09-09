@@ -4,8 +4,28 @@ echo   RevPilot Platform - Autonomous AI Revenue Recovery
 echo ===================================================
 echo.
 
-echo 1. Starting Docker Containers (PostgreSQL, Redis, Kafka)...
-docker compose -f infrastructure/docker-compose.yml up -d
+echo 1. Checking Docker Engine status...
+docker info >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [INFO] Docker Desktop is not running. Launching Docker Desktop...
+    if exist "C:\Program Files\Docker\Docker\Docker Desktop.exe" (
+        start "" "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+    ) else (
+        start "" "Docker Desktop"
+    )
+    echo Waiting for Docker Engine to initialize...
+    :wait_docker
+    timeout /t 4 /nobreak >nul
+    docker info >nul 2>&1
+    if %errorlevel% neq 0 (
+        echo Waiting for Docker Engine...
+        goto wait_docker
+    )
+    echo [OK] Docker Engine is ready!
+)
+
+echo Starting Docker Containers (PostgreSQL, Redis, Kafka)...
+docker compose -f infrastructure/docker-compose.yml up -d --remove-orphans
 if %errorlevel% neq 0 (
     echo [ERROR] Docker compose failed to start. Please ensure Docker Desktop is running.
     pause

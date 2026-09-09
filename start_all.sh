@@ -8,8 +8,24 @@ echo "  RevPilot Platform - Autonomous AI Revenue Recovery"
 echo "==================================================="
 echo
 
-echo "[1/4] Starting Docker Infrastructure (PostgreSQL, Redis, Kafka)..."
-docker compose -f "$SCRIPT_DIR/infrastructure/docker-compose.yml" up -d
+echo "[1/4] Checking Docker Engine status..."
+if ! docker info >/dev/null 2>&1; then
+    echo "[INFO] Docker daemon is not running. Attempting to start Docker..."
+    if command -v open &> /dev/null && [ -d "/Applications/Docker.app" ]; then
+        open -a Docker
+    elif command -v systemctl &> /dev/null; then
+        sudo systemctl start docker || true
+    fi
+    echo "Waiting for Docker daemon to initialize..."
+    until docker info >/dev/null 2>&1; do
+        sleep 3
+        echo "Waiting for Docker..."
+    done
+    echo "[OK] Docker Engine is ready!"
+fi
+
+echo "Starting Docker Infrastructure (PostgreSQL, Redis, Kafka)..."
+docker compose -f "$SCRIPT_DIR/infrastructure/docker-compose.yml" up -d --remove-orphans
 
 echo "[2/4] Starting FastAPI AI Intelligence Service (Port 8000)..."
 (cd "$SCRIPT_DIR/server/ai-service" && (if [ -f "venv/Scripts/activate" ]; then source venv/Scripts/activate; elif [ -f "venv/bin/activate" ]; then source venv/bin/activate; fi) && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload) &

@@ -1,7 +1,7 @@
 {
   "model_name": "LightGBM Classifier",
   "model_version": "recovery_lightgbm_v1",
-  "trained_at": "2026-08-31T19:26:58.789322",
+  "trained_at": "2026-09-09T04:34:32.864138",
   "feature_version": "v1",
   "dataset_size": 50000,
   "metrics": {

@@ -7,8 +7,38 @@ Write-Host "===================================================" -ForegroundColo
 Write-Host ""
 
 # 1. Docker Containers
-Write-Host "[1/4] Starting Docker Infrastructure (PostgreSQL, Redis, Kafka)..." -ForegroundColor Yellow
-docker compose -f "$PSScriptRoot\infrastructure\docker-compose.yml" up -d
+Write-Host "[1/4] Checking Docker Engine status..." -ForegroundColor Yellow
+docker info > $null 2>&1
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[INFO] Docker Desktop is not running. Launching Docker Desktop..." -ForegroundColor Cyan
+    $dockerPath = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+    if (Test-Path $dockerPath) {
+        Start-Process $dockerPath
+    } else {
+        try {
+            Start-Process "docker-desktop:" -ErrorAction SilentlyContinue
+        } catch {
+            Write-Host "[WARNING] Could not locate Docker Desktop executable automatically." -ForegroundColor Yellow
+        }
+    }
+
+    Write-Host "Waiting for Docker Engine to initialize..." -ForegroundColor Yellow
+    $waited = 0
+    $maxWait = 60
+    while ($waited -lt $maxWait) {
+        Start-Sleep -Seconds 3
+        $waited += 3
+        docker info > $null 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] Docker Engine is ready!" -ForegroundColor Green
+            break
+        }
+        Write-Host "Waiting for Docker Engine... (${waited}s / ${maxWait}s)" -ForegroundColor Yellow
+    }
+}
+
+Write-Host "Starting Docker Infrastructure (PostgreSQL, Redis, Kafka)..." -ForegroundColor Yellow
+docker compose -f "$PSScriptRoot\infrastructure\docker-compose.yml" up -d --remove-orphans
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[ERROR] Docker Compose failed to start. Ensure Docker Desktop is running." -ForegroundColor Red
     Exit $LASTEXITCODE
