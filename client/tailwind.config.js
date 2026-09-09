@@ -8,36 +8,34 @@ export default {
   theme: {
     extend: {
       colors: {
-        main: 'var(--text-main)',
-        muted: 'var(--text-muted)',
-        surface: 'var(--bg-surface)',
-        'surface-elevated': 'var(--bg-surface-elevated)',
-        razorblue: {
-          DEFAULT: '#0C6FEE',
-          50: '#F0F6FF',
-          100: '#E0EDFF',
-          500: '#0C6FEE',
-          600: '#0B5ED7',
-          700: '#094EB5',
+        primary: {
+          DEFAULT: '#0A2540',
+          dark: '#02042B',
+          light: '#1E3A8A',
         },
-        razornavy: {
-          DEFAULT: '#02042B',
-          light: '#070D1E',
-          card: '#0E162B',
-        }
+        secondary: {
+          DEFAULT: '#0C6FEE',
+          dark: '#0B5ED7',
+          light: '#3B8DFC',
+          50: '#F0F6FF',
+        },
+        tertiary: {
+          DEFAULT: '#059669',
+          light: '#10B981',
+          dark: '#047857',
+          bg: '#ECFDF5',
+        },
+        surface: {
+          DEFAULT: '#FFFFFF',
+          bg: '#F8FAFC',
+          border: '#E2E8F0',
+          muted: '#64748B',
+        },
       },
-      backgroundColor: {
-        main: 'var(--bg-main)',
-        surface: 'var(--bg-surface)',
-        'surface-elevated': 'var(--bg-surface-elevated)',
+      fontFamily: {
+        sans: ['"Google Sans"', '"Product Sans"', '"Plus Jakarta Sans"', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
       },
-      textColor: {
-        main: 'var(--text-main)',
-        muted: 'var(--text-muted)',
-      },
-      borderColor: {
-        DEFAULT: 'var(--border-color)',
-      }
     },
   },
   plugins: [],

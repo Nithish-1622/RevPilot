@@ -174,6 +174,12 @@ class LangGraphRecoveryAgent:
         if rec_action not in allowed:
             rec_action = 'STOP_RECOVERY'
 
+        from app.engine.timing_engine import optimal_timing_engine
+        from app.engine.planner import strategy_planner
+
+        timing = optimal_timing_engine.calculate_optimal_timing(state["failure_code"], {}, state["amount"])
+        plans = strategy_planner.generate_recovery_plan(state["failure_code"], state["amount"], state["recovery_probability"])
+
         output_dict = {
             'case_id': f"REC-{state['payment_id']}",
             'payment_id': state['payment_id'],
@@ -181,7 +187,10 @@ class LangGraphRecoveryAgent:
             'recovery_probability': state['recovery_probability'],
             'expected_recovery_value': state['expected_recovery_value'],
             'recommended_action': rec_action,
-            'delay_minutes': 120 if rec_action == 'RETRY_LATER' else 0,
+            'delay_minutes': timing['delay_minutes'],
+            'optimal_timing': timing,
+            'recovery_plan': plans['recommended_plan'],
+            'candidate_plans': plans['candidate_plans'],
             'confidence': round(min(0.99, max(0.60, state['recovery_probability'] + 0.1)), 2),
             'reason_codes': state['reason_codes'],
             'explanation': state['explanation'],
